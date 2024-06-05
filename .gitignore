@@ -1,0 +1,10 @@
+/build/
+/gobin/
+
+tmp/
+tools/bin/
+.env
+.idea
+.vscode
+.DS_Store
+.air.toml
