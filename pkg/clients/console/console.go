@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strings"
 
 	"rover/pkg/controller"
 	"rover/pkg/logger"
@@ -26,7 +25,7 @@ func New(rover rovers.Rover, log *logger.Logger) *ConsoleApp {
 
 func (app *ConsoleApp) read(ctx context.Context, scanner *bufio.Scanner) {
 	if scanner.Scan() {
-		input := strings.ToUpper(strings.TrimSpace(scanner.Text()))
+		input := scanner.Text()
 
 		err := controller.ChangePosition(ctx, app.rover, input)
 		if err != nil {
@@ -51,7 +50,13 @@ func (app *ConsoleApp) read(ctx context.Context, scanner *bufio.Scanner) {
 func (app *ConsoleApp) Run(ctx context.Context) {
 	scanner := bufio.NewScanner(os.Stdin)
 
+	x, y, err := app.rover.Position(ctx)
+	if err != nil {
+		app.log.Warn("Ошибка при запросе начальной позиции:",  "msg", err)
+	}
+	
 	// fmt, а не log тк это вывод именно для консольного приложения
+	fmt.Printf("Текущая позиция x  =  %d, y  =  %d\n", x, y)
 	fmt.Println("Введите текст:")
 
 	go func() {

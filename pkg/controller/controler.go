@@ -2,13 +2,36 @@ package controller
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"rover/pkg/rovers"
 )
 
-// TODO сделать оптимизацию/минимизацию пути перед реальным вызовом машины (пример "RL" -> "") + возможно
+var AllowedRunes = map[rune]struct{}{
+	'F':{},
+	'B':{},
+	'R':{},
+	'L':{},
+}
+
+
+// TODO сделать оптимизацию/минимизацию пути перед реальным вызовом машины
 func pathOptimazer(path string) (string, error) {
-	return path, nil
+	path = strings.ToUpper(strings.TrimSpace(path))
+	
+	refined := make([]rune, 0)
+	for _, r  := range path {
+		if _, ok := AllowedRunes[r]; ok  {
+			refined = append(refined, r)
+		}
+	}
+
+	if len(refined) == 0 {
+		return "", fmt.Errorf("empty path")
+	}
+
+	return string(refined), nil
 }
 
 func ChangePosition(ctx context.Context, rover rovers.Rover, path string) error {

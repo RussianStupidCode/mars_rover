@@ -20,6 +20,10 @@ lint:
 	@${EXEC_DIR}/golangci-lint run ./...
 
 .PHONY:
+install-modules:
+	@go mod download
+
+.PHONY:
 test:
 	@go test -v ./...
 
@@ -28,9 +32,13 @@ fmt-imports:
 	@gofumpt -l -w .
 
 .PHONY:
-local-run:
+local-run: install-modules
 	@go run ./cmd/main.go
 
 .PHONY:
-build: lint test
+build: install-modules lint test
 	@go build ./cmd/main.go
+
+.PHONY:
+docker-run:
+	@docker-compose run --rm rover_app
